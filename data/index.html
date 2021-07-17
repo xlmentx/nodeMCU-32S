@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="Ari Cortes">
+    <meta name="description" content="ESP32-MC">
+    <title>ESP32 remote control</title>
+    <link rel="icon" type="image/x-icon" href="tritonAI.ico">
+    <link rel="stylesheet" href="index.css">
+    <script src="index.js"></script>
+  </head>
+
+  <body>
+    <header>
+        <img src = "tritonAI.ico">
+        <a>TRITON AI<h1>UC San Diego AI Club</h1></a>
+        <h2>ESP32-MC</h2>
+    </header>    
+    <div id="mc" class="full">
+      <span>
+        &emsp;
+        <p><b>MC CALIBRATION</b></p>
+        <button id='resize'>&#8722</button>
+      </span>
+      <p>
+        <label class='cal-catagory'>Pins:</label>
+        <span>
+          <label class='cal-option'>srv <input id="servo_pin" type="number" min="0" max="9999"></label>
+          <label class='cal-option'>esc <input id="esc_pin" type="number" min="0" max="9999"></label>
+          <label class='cal-option'>emo <input id="emo_pin" type="number" min="0" max="9999"></label>
+        </span>
+      </p>
+      <p>
+        <label class='cal-catagory'>Steering:</label>
+        <span>
+          <label class='cal-option'>lt <input id="left_steer" type="number" min="0" max="9999"></label>
+          <label class='cal-option'>ctr <input id="center_steer" type="number" min="0" max="9999"></label>
+          <label class='cal-option'>rt <input id="right_steer" type="number" min="0" max="9999"></label>
+        </span>
+      </p>
+      <p>
+        <label class='cal-catagory'>Throttle:</label>
+        <span> 
+          <label class='cal-option'>min <input id="min_throttle" type="number" min="0" max="9999"></label>
+          <label class='cal-option'>mid <input id="mid_throttle" type="number" min="0" max="9999"></label>
+          <label class='cal-option'>max <input id="max_throttle" type="number" min="0" max="9999"></label>
+        </span>
+      </p>
+      <p>
+        <label class='cal-catagory'>HeartBeat:</label>
+        <span> 
+          <label class='cal-option'>F <input id="heartbeat" type="number" min="0" max="9999"></label>
+          <label class='cal-option'>&nbsp</label>
+          <label class='cal-option'>&nbsp</label>
+        </span>
+      </p>
+      <p>
+        <span>
+          &nbsp
+          <button id='test' class="off">&emsp;TEST&emsp;</button>
+          <button id='save' class="off">&emsp;SAVE&emsp;</button>
+          &nbsp
+        </span>
+      </p>
+    </div>
+    <div id="donkey">
+      <span>
+        &nbsp;
+        <p><b>DONKEY</b></p>
+        &nbsp;
+      </span>
+      <p> 
+        <span> 
+          <label class="d-col">Max Throttle <input type="number" min="0" max="9999"></label>
+          <label class="d-col">N-Records <input id=n_records type="number" min="0" max="9999"></label>
+        </span>
+      </p>
+      <p>
+        <span>
+          <button id='ai' class="off">&emsp;AI LAUNCHER&emsp;</button>
+          <button id='erase' class="off"> ERASE RECORDS </button>
+        </span>
+      </p>
+      <p>Status:&nbsp; <label id="status">Running Donkey</label></p>
+      <textarea readonly id="log" rows='1'></textarea>
+    </div>
+    <div>
+      <span>
+        <h2>EMERGENCY STOP</h2> 
+        %EMO-BUTTON%
+      </span>    
+    </div>
+  </body>
+</html>

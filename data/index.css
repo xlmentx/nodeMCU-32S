@@ -1,0 +1,171 @@
+body {
+  font-family: 'Montserrat',sans-serif;
+  background-color: #091d36;
+  color: white;
+  margin: auto;
+  width: 360px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  display: inline-flex;
+  font-size: 27px;
+  margin: 15px 0px;
+}
+
+div {
+  background-color: #363636;
+  margin-bottom: 15px;
+  padding: 7px 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+div.min {
+  height: 45px;
+  overflow: hidden;
+}
+
+#donkey {
+  height: 100%;
+}
+
+textarea{
+  height: 100%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-family: 'Montserrat',sans-serif;
+  color: white;
+  font-size: 16px;
+  line-height: 25px;
+  resize: none;
+  overflow: hidden;
+  margin-bottom: 7px;
+  margin-left: 16px;
+}
+
+a {
+  margin: auto 0px;
+}
+
+h1 {
+  margin: 0px;
+  font-weight: lighter;
+  font-size: 13px;
+}
+
+h2 {
+  margin: 0px auto;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+
+p {
+  display: flex;
+  margin: 7px 0px;
+}
+
+span {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+input {
+  width: 40px;
+  text-align: center;
+  background-color: grey;
+  border: none;
+  outline: none;
+  font-family: 'Montserrat',sans-serif;
+  color: white;
+  font-size: 16px;
+}
+
+label.cal-catagory {
+  min-width: 80px;
+}
+
+label.cal-option {
+  min-width: 80px;
+  text-align: right;
+}
+
+label.d-col {
+  min-width: 150px;
+  text-align: center;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+#resize {
+  background-color: transparent;  
+  color: white;
+  outline: none;
+  border: none;
+  padding: 0;
+  font-size: 28px;
+  font-weight: bolder;
+}
+
+button.off {
+  background-color: #091d36;  
+  color: white;
+  outline: none;
+  border: none;
+  padding: 10px 12px;
+  margin: 0px 5px;
+}
+
+button.on {
+  background-color: #70FEE8;
+  color: black;
+  border: none;
+  outline: none;
+  font-weight: bolder;
+  padding: 10px 12px;
+  margin: 0px 5px;
+}
+
+button:hover {
+  background-color: #70FEE8;
+  color: black;
+  outline: none;
+  font-weight: bolder;
+}
+
+#eStop {
+  position: relative;
+  width: 6em;
+  height: 6em;
+  border: 2px solid #000;
+  border-radius: 3em;
+  background-image: radial-gradient(farthest-corner at 50% 20%, #b30000 0%, #330000 100%);
+  box-shadow: 0 0.5em 1em rgba(102, 0, 0, 0.3);
+}
+#eStop:after {
+  content: '';
+  position: absolute;
+  top: .3em;
+  left: 1em;
+  width: 60%;
+  height: 40%;
+  border-radius: 60%;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+}
+#eStop.on {
+  background-image: radial-gradient(farthest-corner at 50% 75%, red 0%, #990000 100%);
+  box-shadow: 0 1em 1.5em rgba(255, 0, 0, 0.5);
+}
