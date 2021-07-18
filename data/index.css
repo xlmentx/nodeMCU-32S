@@ -10,15 +10,16 @@ body {
 }
 
 header {
-  display: inline-flex;
+  display: flex;
   font-size: 27px;
   margin: 15px 0px;
 }
 
 div {
+  width: 100%;
   background-color: #363636;
   margin-bottom: 15px;
-  padding: 7px 15px;
+  padding: 7px 0px;
   display: flex;
   flex-direction: column;
 }
@@ -64,15 +65,12 @@ h2 {
   align-items: center;
 }
 
-p {
-  display: flex;
-  margin: 7px 0px;
-}
-
 span {
-  width: 100%;
+  padding: 7px 14px;
+  width: auto;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 input {
@@ -118,6 +116,8 @@ button:hover {
   padding: 0;
   font-size: 28px;
   font-weight: bolder;
+  line-height: 5px;
+  
 }
 
 button.off {
