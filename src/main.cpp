@@ -53,7 +53,7 @@ QueueHandle_t server2Status_QueueHandle;
 // FiLL In Buttons For New Users Using Current Values
 String processor(const String &var) {
     String buttons = "";
-    if(var == "EMO-BUTTON"){
+    if(var == "E-STOP"){
         String eStop_state = eStop_button.on?"on":"off";
         buttons += "<button id='eStop' class="+eStop_state+"></button>";
     }

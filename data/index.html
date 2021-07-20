@@ -13,71 +13,69 @@
   </head>
 
   <body>
-    <header>
+    <span class="header">
       <img src = "tritonAI.ico">
-      <a>TRITON AI<h1>UC San Diego AI Club</h1></a>
-      <h2>ESP32-MC</h2>
-    </header>    
-    <div id="mc" class="full">
+      <a>TRITON AI<h6>UC San Diego AI Club</h6></a>
+      <h3>ESP32-MC</h3>
+    </span>    
+    <div id="calibration">
       <span>
-        <label>&emsp;</label>
-        <b>MC CALIBRATION</b>
-        <button id='resize'>&#8722</button>
+        <p></p>
+        <p class="wide"><b>MC CALIBRATION</b></p>
+        <p class="right"><button id='resize'>−</button></p>
       </span>
       <span>
-        <label class='cal-catagory'>Pins:</label>
-        <label class='cal-option'>srv <input id="servo_pin" type="number" min="0" max="9999"></label>
-        <label class='cal-option'>esc <input id="esc_pin" type="number" min="0" max="9999"></label>
-        <label class='cal-option'>emo <input id="emo_pin" type="number" min="0" max="9999"></label>
+        <p>Pins:</p>
+        <p class="right">srv <input id="servo_pin" type="number" min="0" max="9999"></p>
+        <p class="right">esc <input id="esc_pin" type="number" min="0" max="9999"></p>
+        <p class="right">emo <input id="emo_pin" type="number" min="0" max="9999"></p>
       </span>
       <span>
-        <label class='cal-catagory'>Steering:</label>
-        <label class='cal-option'>lt <input id="left_steer" type="number" min="0" max="9999"></label>
-        <label class='cal-option'>ctr <input id="center_steer" type="number" min="0" max="9999"></label>
-        <label class='cal-option'>rt <input id="right_steer" type="number" min="0" max="9999"></label>
+        <p>Steering:</p>
+        <p class="right">lt <input id="left_steer" type="number" min="0" max="9999"></p>
+        <p class="right">ctr <input id="center_steer" type="number" min="0" max="9999"></p>
+        <p class="right">rt <input id="right_steer" type="number" min="0" max="9999"></p>
       </span>
       <span>
-        <label class='cal-catagory'>Throttle:</label>
-        <label class='cal-option'>min <input id="min_throttle" type="number" min="0" max="9999"></label>
-        <label class='cal-option'>mid <input id="mid_throttle" type="number" min="0" max="9999"></label>
-        <label class='cal-option'>max <input id="max_throttle" type="number" min="0" max="9999"></label>
+        <p>Throttle:</p>
+        <p class="right">min <input id="min_throttle" type="number" min="0" max="9999"></p>
+        <p class="right">mid <input id="mid_throttle" type="number" min="0" max="9999"></p>
+        <p class="right">max <input id="max_throttle" type="number" min="0" max="9999"></p>
       </span>
       <span>
-        <label class='cal-catagory'>HeartBeat:</label>
-        <label class='cal-option'>F <input id="heartbeat" type="number" min="0" max="9999"></label>
-        <label class='cal-option'>&nbsp</label>
-        <label class='cal-option'>&nbsp</label>
+        <p>Heartbeat:</p>
+        <p class="right">fq <input id="heartbeat" type="number" min="0" max="9999"></p>
+        <p>&nbsp</p>
+        <p>&nbsp</p>
       </span>
       <span>
-        <label>&nbsp</label>
-        <button id='test' class="off">&emsp;TEST&emsp;</button>
-        <button id='save' class="off">&emsp;SAVE&emsp;</button>
-        <label>&nbsp</label>
+        <p class="wide">&emsp;<button id='test'>&emsp;Test&emsp;</button></p>
+        <p class="wide"><button id='save'>&emsp;Save&emsp;</button>&emsp;</p>
       </span>
     </div>
     <div id="donkey">
       <span>
-        <label>&nbsp</label>
-        <b>DONKEY</b>
-        <label>&nbsp</label>
+        <p></p>
+        <p class="wide"><b>DONKEY</b></p>
+        <p></p>
       </span>
       <span> 
-        <label class="d-col">Max Throttle <input type="number" min="0" max="9999"></label>
-        <label class="d-col">N-Records <input id=n_records type="number" min="0" max="9999"></label>
+        <P class="wide">Max Throttle <input id="throttle" type="number" min="0" max="9999"></p>
+        <P class="wide">N-Records <input id="n_records" type="number" min="0" max="9999"></p>
       </span>
       <span>
-        <button id='ai' class="off">&emsp;AI LAUNCHER&emsp;</button>
-        <button id='erase' class="off"> ERASE RECORDS </button>
+        <P class="wide"><button id='ai'>&ensp;AI Launcher&ensp;</button></P>
+        <P class="wide"><button id='erase'>Erase Records</button></P>
       </span>
-      <span>
-        <label>Status:&nbsp; <label id="status">Running Donkey</label></label>
+      <span>Status:&nbsp; 
+        <label id="status">Running Donkey</label>
       </span>
       <textarea readonly id="log" rows='1'></textarea>
     </div>
     <div>
       <span>
-        <h2>EMERGENCY STOP</h2> 
-        %EMO-BUTTON%
+        <h3>EMERGENCY STOP</h3> 
+        %E-STOP%
       </span>    
     </div>
   </body>
