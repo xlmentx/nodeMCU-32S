@@ -25,8 +25,8 @@
 #define CENTER_STEER 116
 #define RIGHT_STEER 148
 #define QUEUE_SIZE 10
-#define JSON_SIZE 11
-#define BUFFER_SIZE 220
+#define JSON_SIZE 13
+#define BUFFER_SIZE 310 
 
 // WiFi Credentials
 const char *WIFI_SSID = "ESP32Test";
@@ -81,21 +81,46 @@ void onEvent(AsyncWebSocket       *server,
             const size_t size = JSON_OBJECT_SIZE(JSON_SIZE);
             StaticJsonDocument<size> json;
             DeserializationError err = deserializeJson(json, data);
-            if(err){ return;}
             
+            // Catch Deserialization Error
+            if(err) { 
+                return; 
+            }
+            // Test Calibration 
+            else if(json["event"]=="test") {
+                // Test Values
+                json.clear();
+                json["event"]="test";
+            }
+            // Save Calibration 
+            else if(json["event"]=="save") {
+                // Save Values
+            }
+            // Update Throttle 
+            else if(json["event"]=="throttle") {
+                // Save Value
+            }
+            // Erase Records 
+            else if(json["event"]=="erase") {
+                // Erase Records
+                // Save Value
+            }
             // Launch AI 
-            if(strcmp(json["event"], "save") == 0) {
-                //save data
-            } 
-            // Launch AI 
-            else if(strcmp(json["event"], "ai") == 0) {
+            else if(json["event"]=="ai") {
                 ai_button.on = !ai_button.on;
-                json["state"] = ai_button.on? "on": "off";
+                json["ai"] = ai_button.on? "on": "off";
+                json["event"] = "ai_"+json["ai"].as<String>();                
+            } 
+            // Update PID 
+            else if(json["event"]=="pid") {
+                // Update PID
+                // Save Values               
             } 
             // Update EMO Button
-            else if(strcmp(json["event"], "eStop") == 0) {
+            else if(json["event"] == "eStop") {
                 eStop_button.on = !eStop_button.on;
-                json["state"] = eStop_button.on? "on": "off";
+                json["eStop"] = eStop_button.on? "on": "off";
+                json["event"] = "eStop_"+json["eStop"].as<String>();
             }
             
             // Sync Devices

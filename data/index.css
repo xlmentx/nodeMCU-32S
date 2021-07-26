@@ -8,7 +8,6 @@ body, input, textarea, button {
 
 body {
   width: 360px;
-  height: var(--vh, 100vh);
   margin: auto;
   display: flex;
   flex-direction: column;
@@ -16,7 +15,7 @@ body {
 }
 
 div {
-  margin-bottom: 15px;
+  margin-bottom: 14px;
   padding: 7px 14px;
   display: flex;
   flex-direction: column;
@@ -28,8 +27,12 @@ div.min {
   overflow: hidden;
 }
 
-#donkey {
+div.full {
   height: 100%;
+}
+
+label.min {
+  display: none;
 }
 
 span {
@@ -63,12 +66,11 @@ h3 {
 
 p {
   width: 25%;
-  margin: 0;
+  margin: auto 0;
 }
 
 p.right {
   text-align: right;
-  max-height: 20px;
 }
 
 p.wide {
@@ -78,43 +80,86 @@ p.wide {
 
 input {
   width: 40px;
+  padding: 0;
   text-align: center;
   background-color: rgb(127, 127, 127);
 }
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
+  -webkit-appearance: none;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+input[type=range]{
+  width: 180px;
+  height: 8px;
+  margin: auto 10px;
+  border-radius: 4px;
+  -webkit-appearance: none;
+  background: linear-gradient(90deg, #70FEE8 50%, #091d36 50%);
+}
+
+input[type=range]::-webkit-slider-thumb {
+  width:16px;
+  height:16px;
+  border-radius: 8px;
+  -webkit-appearance: none;
+  background-color: #70FEE8;
+  cursor: pointer;
+}
+
+input[type=range]::-moz-range-thumb {
+  width:16px;
+  height:16px;
+  border-radius: 8px;
+  background-color: #70FEE8;
+  cursor: pointer;
 }
   
 textarea{
   height: 100%;
-  margin-bottom: 7px;
-  margin-left: 20px;
+  padding: 7px 0px;
+  padding-left: 20px;
   resize: none;
   overflow: hidden;
   background-color: transparent;
-  line-height: 26px;
+  line-height: 28px;
+  text-indent: -20px;
 }
 
 button {
-  padding: 8px 16px;
+  padding: 7px 14px;
   background-color: #091d36;  
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
-button.on, button:hover {
+button[value='on'], button:active {
   background-color: #70FEE8;
   font-weight: bolder;
-  color: black;
+  color: #091d36;
 }
 
-#resize {
+@media(hover: hover) and (pointer: fine) {
+  button:hover {
+    background-color: #70FEE8;
+    font-weight: bolder;
+    color: #091d36;
+  }
+}
+
+#resize, #switch {
+  height: 18px;
   padding: 0;
   background-color: transparent;  
+  vertical-align: top;
   font-size: 28px;
+  line-height: 10px;
   font-weight: bolder;
-  line-height: 18px;
   color: white;
 }
 
@@ -139,7 +184,7 @@ button.on, button:hover {
   background-image: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
 }
 
-#eStop.on {
+#eStop[value='on'] {
   background-image: radial-gradient(farthest-corner at 50% 75%, red 0%, #990000 100%);
   box-shadow: 0 1em 1.5em rgba(255, 0, 0, 0.5);
 }

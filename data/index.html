@@ -1,81 +1,141 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="author" content="Ari Cortes">
-    <meta name="description" content="ESP32-MC">
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta name='apple-mobile-web-app-capable' content='yes'>
+    <meta name='author' content='Ari Cortes'>
+    <meta name='description' content='ESP32-MC'>
     <title>ESP32 remote control</title>
-    <link rel="icon" type="image/x-icon" href="tritonAI.ico">
-    <link rel="stylesheet" href="index.css">
-    <script src="index.js"></script>
+    <link rel='icon' type='image/x-icon' href='tritonAI.ico'>
+    <link rel='stylesheet' href='index.css'>
+    <script src='index.js'></script>
   </head>
 
   <body>
-    <span class="header">
-      <img src = "tritonAI.ico">
+    <span class='header'>
+      <img src = 'tritonAI.ico'>
       <a>TRITON AI<h6>UC San Diego AI Club</h6></a>
       <h3>ESP32-MC</h3>
     </span>    
-    <div id="calibration">
+    <div id='calibration'>
       <span>
         <p></p>
-        <p class="wide"><b>MC CALIBRATION</b></p>
-        <p class="right"><button id='resize'>−</button></p>
+        <p class='wide'><b>MC CALIBRATION</b></p>
+        <p class='right'>
+          <button id='resize' data-div='calibration'>−</button>
+        </p>
       </span>
       <span>
         <p>Pins:</p>
-        <p class="right">srv <input id="servo_pin" type="number" min="0" max="9999"></p>
-        <p class="right">esc <input id="esc_pin" type="number" min="0" max="9999"></p>
-        <p class="right">emo <input id="emo_pin" type="number" min="0" max="9999"></p>
+        <p class='right'>srv 
+          <input id='servo_pin' type='number' maxlength='4'>
+        </p>
+        <p class='right'>esc 
+          <input id='esc_pin' type='number' maxlength='4'>
+        </p>
+        <p class='right'>emo 
+          <input id='emo_pin' type='number' maxlength='4'>
+        </p>
       </span>
       <span>
         <p>Steering:</p>
-        <p class="right">lt <input id="left_steer" type="number" min="0" max="9999"></p>
-        <p class="right">ctr <input id="center_steer" type="number" min="0" max="9999"></p>
-        <p class="right">rt <input id="right_steer" type="number" min="0" max="9999"></p>
+        <p class='right'>lt 
+          <input id='left_steer' type='number' maxlength='4'>
+        </p>
+        <p class='right'>ctr 
+          <input id='center_steer' type='number' maxlength='4'>
+        </p>
+        <p class='right'>rt 
+          <input id='right_steer' type='number' maxlength='4'>
+        </p>
       </span>
       <span>
         <p>Throttle:</p>
-        <p class="right">min <input id="min_throttle" type="number" min="0" max="9999"></p>
-        <p class="right">mid <input id="mid_throttle" type="number" min="0" max="9999"></p>
-        <p class="right">max <input id="max_throttle" type="number" min="0" max="9999"></p>
+        <p class='right'>min 
+          <input id='min_throttle' type='number' maxlength='4'>
+        </p>
+        <p class='right'>mid 
+          <input id='mid_throttle' type='number' maxlength='4'>
+        </p>
+        <p class='right'>max 
+          <input id='max_throttle' type='number' maxlength='4'>
+        </p>
       </span>
       <span>
         <p>Heartbeat:</p>
-        <p class="right">fq <input id="heartbeat" type="number" min="0" max="9999"></p>
+        <p class='right'>fq <input id='heartbeat' type='number' maxlength='4'></p>
         <p>&nbsp</p>
         <p>&nbsp</p>
       </span>
       <span>
-        <p class="wide">&emsp;<button id='test'>&emsp;Test&emsp;</button></p>
-        <p class="wide"><button id='save'>&emsp;Save&emsp;</button>&emsp;</p>
+        <p class='wide'>&emsp;
+          <button id='test' data-form='calibration'>&emsp;Test&emsp;</button>
+        </p>
+        <p class='wide'>
+          <button id='save' data-form='calibration'>&emsp;Save&emsp;</button>&emsp;
+        </p>
       </span>
     </div>
-    <div id="donkey">
+    <div id='custom' class='full'>
       <span>
         <p></p>
-        <p class="wide"><b>DONKEY</b></p>
-        <p></p>
+        <p class='wide'><b id='program'>DONKEY</b></p>
+        <p class='right'>
+          <button id='switch' data-div='donkey ros'>−</button>
+        </p>
       </span>
-      <span> 
-        <P class="wide">Max Throttle <input id="throttle" type="number" min="0" max="9999"></p>
-        <P class="wide">N-Records <input id="n_records" type="number" min="0" max="9999"></p>
-      </span>
-      <span>
-        <P class="wide"><button id='ai'>&ensp;AI Launcher&ensp;</button></P>
-        <P class="wide"><button id='erase'>Erase Records</button></P>
-      </span>
-      <span>Status:&nbsp; 
-        <label id="status">Running Donkey</label>
-      </span>
-      <textarea readonly id="log" rows='1'></textarea>
+      <label id='donkey'>
+        <span> 
+          <P class='wide' id='t_update'>Max Throttle 
+            <input id='m_throttle' type='number' maxlength='4'>
+          </p>
+          <P class='wide'>
+            <button id='throttle' data-form='t_update'>&ensp;Update Max&ensp;</button>
+          </P>
+        </span>
+        <span>
+          <P class='wide' id='n_records'>&nbsp N-Records 
+            <input id='n' type='number' maxlength='4'>
+          </p>
+          <P class='wide'>
+            <button id='erase' data-form='n_records'>Erase Records</button>
+          </P>
+        </span>
+        <span>
+          <p ></p>
+          <p class='wide'>
+            <button id='ai' data-form='none'>&ensp;AI Launcher&ensp;</button>
+          </p>
+        </span>
+      </label>
+      <label id='ros' class='min'>
+        <span>
+          <p class='right'>kP:</p> 
+          <input id='kp' type='range' min='0' max='100' value='50'>
+        </span>
+        <span> 
+          <p class='right'>kI:</p> 
+          <input id='ki' type='range' min='0' max='100' value='50'>
+        </span>
+        <span>
+          <p class='right'>kD:</p> 
+          <input id='kd' type='range' min='0' max='100' value='50'>
+        </span>
+        <span>
+          <p></p>
+          <p class='wide'>
+            <button id='pid' data-form='ros'>Update PID</button>
+          </p>
+          <p></p>
+        </span>
+      </label>
+      <textarea readonly id='event' rows='1'></textarea>
     </div>
     <div>
       <span>
         <h3>EMERGENCY STOP</h3> 
-        %E-STOP%
+        <button id='eStop' data-form='none'></button>
       </span>    
     </div>
   </body>
