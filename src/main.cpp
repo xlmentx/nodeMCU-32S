@@ -108,7 +108,7 @@ void onEvent(AsyncWebSocket       *server,
             // Launch AI 
             else if(json["event"]=="ai") {
                 ai_button.on = !ai_button.on;
-                json["ai"] = ai_button.on? "on": "off";
+                json["ai"] = json["ai"]=="on"? "off": "on";
                 json["event"] = "ai_"+json["ai"].as<String>();                
             } 
             // Update PID 
@@ -119,7 +119,7 @@ void onEvent(AsyncWebSocket       *server,
             // Update EMO Button
             else if(json["event"] == "eStop") {
                 eStop_button.on = !eStop_button.on;
-                json["eStop"] = eStop_button.on? "on": "off";
+                json["eStop"] = json["eStop"]=="on"? "off": "on";
                 json["event"] = "eStop_"+json["eStop"].as<String>();
             }
             

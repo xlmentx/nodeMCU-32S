@@ -27,7 +27,7 @@ div.min {
   overflow: hidden;
 }
 
-div.full {
+div.program {
   height: 100%;
 }
 
@@ -85,8 +85,8 @@ input {
   background-color: rgb(127, 127, 127);
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+::-webkit-outer-spin-button,
+::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
 
@@ -122,16 +122,21 @@ input[type=range]::-moz-range-thumb {
   
 textarea{
   height: 100%;
-  padding: 7px 0px;
   padding-left: 20px;
+  margin-bottom: 7px;
   resize: none;
-  overflow: hidden;
   background-color: transparent;
-  line-height: 28px;
+  line-height: 30px;
   text-indent: -20px;
 }
 
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
+}
+
 button {
+  min-width: 100px;
   padding: 7px 14px;
   background-color: #091d36;  
   cursor: pointer;
@@ -153,12 +158,12 @@ button[value='on'], button:active {
 }
 
 #resize, #switch {
-  height: 18px;
+  min-width: 0;
   padding: 0;
   background-color: transparent;  
-  vertical-align: top;
   font-size: 28px;
-  line-height: 10px;
+  vertical-align: top;
+  line-height: 16px;
   font-weight: bolder;
   color: white;
 }
@@ -166,6 +171,7 @@ button[value='on'], button:active {
 #eStop {
   position: relative;
   width: 5em;
+  min-width: 0;
   height: 5em;
   border: 2px solid #000;
   border-radius: 2.5em;
