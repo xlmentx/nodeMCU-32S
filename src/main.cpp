@@ -9,26 +9,96 @@
 #include <esp_task_wdt.h>
 #include <ESP32Servo.h>
 
-// Macros
-#define SERVO_PIN 0
-#define ESC_PIN 4
-#define EMO_PIN 15
+// -------------------------------------------------------------------
+// I/O Pins (Hardcoded, PCB V1.0)
+// -------------------------------------------------------------------
+
+// Generic PWM Outputs
+#define PWM_CH1 16
+#define PWM_CH2 2
+#define PWM_CH3 12
+
+// Generic RC Inputs
+#define RC_CH1 36
+#define RC_CH2 39
+#define RC_CH3 34
+#define RC_CH4 35
+
+// RGB LED
+#define RGB_R 14
+#define RGB_G 27
+#define RGB_B 26
+
+// Red/Blu LED
+#define RB_R  4
+#define RB_B  0
+
+// BLDC Hall Effect Sensor Pins
+#define BLDC1 32
+#define BLDC2 33
+#define BLDC3 25
+
+// Generic I2C Bus x2
+#define I2C1_SDA  21
+#define I2C1_SCL  22
+#define I2C2_SDA  15
+#define I2C2_SCL  5
+
+// Generic SPI Bus
+#define SPI_MISO  19
+#define SPI_MOSI  23
+#define SPI_CLK   18
+#define SPI_CS    17
+
+// Output Enable (input pin)
+// For emulating Adafruit PCA9685 PWM Driver, use with I2C1 bus
+#define PWM_OE    13
+
+// -------------------------------------------------------------------
+// I/O Pin Aliases (for team-specific wiring; modify as necessary)
+// -------------------------------------------------------------------
+
+// PWM Pin Aliases
+#define PWM_STEERING PWM_CH1
+#define PWM_THROTTLE PWM_CH2
+
+// RC Pin Aliases
+// define as necessary, with Jack/Haoru's help
+
+// ---------------------------------------------------------
+// Macros (TODO Organize)
+// ---------------------------------------------------------
 #define HTTP_PORT 80
 #define TIMEOUT 500
 #define WDT_TIMEOUT 3
-#define STEERING_CHN 3
-#define IDLE_THROT 1500
-#define BRAKE_THROT 1000
-#define MID_THROT 1500
-#define MAX_THROT 2000
-#define LEFT_STEER 84
-#define CENTER_STEER 116
-#define RIGHT_STEER 148
 #define QUEUE_SIZE 10
 #define JSON_SIZE 13
-#define BUFFER_SIZE 310 
+#define BUFFER_SIZE 310
+#define STEERING_CHN 3
+#define EMO_PIN 15
 
+// ---------------------------------------------------------
+// Calibration Parameters (TODO Store in Flash Memory)
+// ---------------------------------------------------------
+#define IDLE_THROT  1500
+#define BRAKE_THROT 1000 // Full Reverse?
+#define MID_THROT   1750
+#define MAX_THROT   2000
+
+// Currently calculated from mapping 0-255 values
+// into 1000-2000 microsecond pulses
+// TODO Recalibrate if necessary
+#define LEFT_STEER 1330
+#define CENTER_STEER 1450
+#define RIGHT_STEER 1580
+
+//#define LEFT_STEER 84
+//#define CENTER_STEER 116
+//#define RIGHT_STEER 148
+
+// ---------------------------------------------------------
 // WiFi Credentials
+// ---------------------------------------------------------
 const char *WIFI_SSID = "ESP32Test";
 const char *WIFI_PASS = "jetsonucsd";
 
@@ -39,12 +109,16 @@ struct Button {
     void update() {digitalWrite(pin, on ? HIGH : LOW);}
 };
 
-// Instances
+// Instances (Hardware items)
+// TODO migrate steering servo from ledc to Servo
+Servo pwmThrottle;
+Servo pwmSteering;
+
+// Instances (software structures)
 Button eStop_button = {EMO_PIN, false };
 Button ai_button = {NULL, false };
 AsyncWebServer server(HTTP_PORT);
 AsyncWebSocket ws("/ws");
-Servo pwmThrottle;
 TaskHandle_t server_Handle;
 TaskHandle_t pwm_Handle;
 QueueHandle_t server2PWM_QueueHandle;
@@ -170,27 +244,6 @@ void serverTasks(void* param) {
     }
 }
 
-// PWM Initialization
-void pwmSetup() {
-    // Initialize throttle
-    pinMode(ESC_PIN, OUTPUT);
-    pwmThrottle.attach(ESC_PIN);
-    pwmThrottle.writeMicroseconds(IDLE_THROT);
-    
-    // Initialize steering
-    pinMode(SERVO_PIN, OUTPUT);
-    ledcSetup(STEERING_CHN, 300, 8);
-    ledcAttachPin(SERVO_PIN, STEERING_CHN);
-    ledcWrite(STEERING_CHN, CENTER_STEER);
-    
-    //enable panic so ESP32 restarts
-    esp_task_wdt_init(WDT_TIMEOUT, true); 
-    
-    // Delay to calibrate ESC
-    delay(7000);
-    Serial.println("PWM Ready to go");
-}
-
 // PWM Loop
 void pwmTasks(void* param) {
     bool killed;
@@ -198,7 +251,6 @@ void pwmTasks(void* param) {
     Serial.println(xPortGetCoreID());
     unsigned long begin = millis();
     unsigned long end = millis();
-    esp_task_wdt_add(NULL);
     bool i = false;
     while(true)
     {    
@@ -231,7 +283,7 @@ void pwmTasks(void* param) {
                 Serial.println("Enterning backup routine");
                 while(1) {
                     pwmThrottle.writeMicroseconds(IDLE_THROT);
-                    ledcWrite(STEERING_CHN, CENTER_STEER);
+                    pwmSteering.writeMicroseconds(CENTER_STEER);
                     delay(100);
                 }
             }
@@ -257,7 +309,7 @@ void pwmTasks(void* param) {
             float normalized_steering = doc["steering"];
             int steering_pwm = !i? CENTER_STEER+int(normalized_steering*int((RIGHT_STEER-LEFT_STEER)/2)): CENTER_STEER;
             int throttle_pwm = !i? IDLE_THROT+int(normalized_throttle*500): IDLE_THROT;
-            ledcWrite(STEERING_CHN, steering_pwm);
+            pwmSteering.writeMicroseconds(steering_pwm);
             pwmThrottle.writeMicroseconds(throttle_pwm);
             Serial.print("steering_pwm=");
             Serial.print(steering_pwm);
@@ -283,13 +335,112 @@ void setup()
         Serial.println("QUEUE NOT SET");
     }
 
+    // TODO initIO needs testing
+    initIO();
+
     serverSetup();
     xTaskCreatePinnedToCore(serverTasks, "ServerTasks", 10000, NULL, 2, &server_Handle, 0);
     delay(500); 
-    //pwmSetup();
+    //initPWM();
     //xTaskCreatePinnedToCore(pwmTasks, "pwmTasks", 10000, NULL, 1, &pwm_Handle, 1);
     //delay(500);
 }
 
 // Main Loop
 void loop() {}
+
+// ---------------------------------------------------------
+// Init Functions
+// ---------------------------------------------------------
+
+void initIOPins() {
+
+  // LEDs
+  pinMode(RGB_R, OUTPUT);
+  pinMode(RGB_G, OUTPUT);
+  pinMode(RGB_B, OUTPUT);
+  pinMode(RB_R,  OUTPUT);
+  pinMode(RB_B,  OUTPUT);
+
+  // PWM Pins
+  initPWM();
+
+  // RC Pins
+  initRC();
+
+  // BLDC Sensor
+  initBLDC();
+
+  // Communication Busses
+  initI2C();  // Generic I2C lines + OE pin
+  initSPI();  // Generic SPI
+}
+
+void initPWM() {
+    pinMode(PWM_THROTTLE, OUTPUT);
+    pwmThrottle.attach(PWM_THROTTLE);
+    pwmThrottle.writeMicroseconds(IDLE_THROT);
+
+    // Initialize steering
+    pinMode(PWM_STEERING, OUTPUT);
+    pwmSteering.attach(PWM_STEERING);
+    pwmSteering.writeMicroseconds(CENTER_STEER);
+
+    // Delay to calibrate ESC
+    delay(7000);
+    Serial.println("PWM Ready to go");
+}
+
+void initRC() {
+  // TODO
+}
+
+void initBLDC() {
+  pinMode(BLDC1, INPUT);
+  pinMode(BLDC2, INPUT);
+  pinMode(BLDC3, INPUT);
+
+  // Change to 0 to disable at compile-time (for debug)
+  #if 0
+  attachInterrupt(digitalPinToInterrupt(BLDC1), ISR_BLDC1, FALLING);
+  attachInterrupt(digitalPinToInterrupt(BLDC2), ISR_BLDC2, FALLING);
+  attachInterrupt(digitalPinToInterrupt(BLDC3), ISR_BLDC3, FALLING);
+  #endif
+}
+
+
+// 2x Generic I2C Busses, plus OE pin
+void initI2C() {
+  pinMode(PWM_OE, INPUT);
+
+  // TODO
+}
+
+// Generic SPI Bus
+void initSPI() {
+  // TODO
+}
+
+// Watchdog Timer
+void initWDT() {
+    esp_task_wdt_add(NULL);
+
+    // TODO set WDT reset period
+
+    //enable WDT panic so ESP32 restarts
+    esp_task_wdt_init(WDT_TIMEOUT, true);
+}
+
+// ---------------------------------------------------------
+// Interrupt Service Routines (ISR) for BLDC Sensor
+// ---------------------------------------------------------
+
+void IRAM_ATTR ISR_BLDC1() {
+}
+
+void IRAM_ATTR ISR_BLDC2() {
+}
+
+void IRAM_ATTR ISR_BLDC3() {
+}
+
