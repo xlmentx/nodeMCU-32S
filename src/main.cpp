@@ -12,12 +12,6 @@
 #include "defines.h"
 
 // ---------------------------------------------------------
-// WiFi Credentials
-// ---------------------------------------------------------
-const char *WIFI_SSID = "ESP32Test";
-const char *WIFI_PASS = "jetsonucsd";
-
-// ---------------------------------------------------------
 // RTOS Structures
 // ---------------------------------------------------------
 TaskHandle_t th_server;
@@ -31,6 +25,12 @@ QueueHandle_t qh_pwmCommand;;
 // Useful Functions
 // ---------------------------------------------------------
 
+static void initIO();
+static void initRC();
+static void initBLDC();
+static void initI2C();
+static void initSPI();
+static void initWDT();
 
 // Set Up
 void setup()
@@ -56,8 +56,9 @@ void setup()
     initIO();
     initWebServer();
 
-    xTaskCreatePinnedToCore(task_WebServer,  "Task_WebServer",  10240, NULL, 2, &th_server, 0);
-    xTaskCreatePinnedToCore(task_PWM,        "Task_PWM",        2048,  NULL, 5, &th_pwm,    1);
+    xTaskCreatePinnedToCore(task_WebServer,    "Task_WebServer",    10240, NULL, 2, &th_server, 0);
+    xTaskCreatePinnedToCore(task_PWM,          "Task_PWM",           2048, NULL, 5, &th_pwm,    1);
+    xTaskCreatePinnedToCore(task_SerialParser, "Task_SerialParser", 40968, NULL, 3, &th_pwm,    1);
 }
 
 // Main Loop
@@ -67,7 +68,7 @@ void loop() {}
 // Init Functions
 // ---------------------------------------------------------
 
-void initIOPins() {
+static void initIO() {
 
   // LEDs
   pinMode(RGB_R, OUTPUT);
@@ -90,11 +91,11 @@ void initIOPins() {
   initSPI();  // Generic SPI
 }
 
-void initRC() {
+static void initRC() {
   // TODO
 }
 
-void initBLDC() {
+static void initBLDC() {
   pinMode(BLDC1, INPUT);
   pinMode(BLDC2, INPUT);
   pinMode(BLDC3, INPUT);
@@ -109,19 +110,19 @@ void initBLDC() {
 
 
 // 2x Generic I2C Busses, plus OE pin
-void initI2C() {
+static void initI2C() {
   pinMode(PWM_OE, INPUT);
 
   // TODO
 }
 
 // Generic SPI Bus
-void initSPI() {
+static void initSPI() {
   // TODO
 }
 
 // Watchdog Timer
-void initWDT() {
+static void initWDT() {
     esp_task_wdt_add(NULL);
 
     // TODO set WDT reset period

@@ -1,8 +1,4 @@
 /*
- * threads_core1.cpp
- *
- * Contains the RTOS Tasks relevant to the ESP32 I/O, parsing
- * Serial messages, and dispatching commands.
  *
  */
 
@@ -157,3 +153,4 @@ void task_PWM(void* param) {
     }
 }
 */
+

@@ -1,10 +1,4 @@
 /*
- * threads_core0.cpp
- *
- * Contains the RTOS Tasks relevant to the web server handling.
- *
- * Core 0 handles the Web Server stuff and networking stack. 
- *
  * TODO more web server description
  *
  */
@@ -12,12 +6,21 @@
 #include "defines.h"
 
 // ---------------------------------------------------------
+// WiFi Credentials
+// ---------------------------------------------------------
+const char *WIFI_SSID = "ESP32Test";
+const char *WIFI_PASS = "jetsonucsd";
+
+// ---------------------------------------------------------
 // Web Server Structures
 // ---------------------------------------------------------
 Button eStop_button = {EMO_PIN, false };
-Button ai_button = {NULL, false };
+Button ai_button = {NULL, false};
 AsyncWebServer server(HTTP_PORT);
 AsyncWebSocket ws("/ws");
+
+void onWebServerEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len);
+void onRootRequest(AsyncWebServerRequest *request);
 
 // ---------------------------------------------------------
 // RTOS Tasks
@@ -143,3 +146,4 @@ void onWebServerEvent(AsyncWebSocket *server,
         }
     }
 }
+

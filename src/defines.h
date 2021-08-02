@@ -116,8 +116,8 @@ struct Button {
 // Passed into qh_pwmCommand from Serial or WebServer;
 // PWM Task receives PWM command and dispatches it
 typedef struct {
-  uint16_t  channel,      // PWM Channel [1-3]
-  uint16_t  pulseWidth,   // Positive Pulse Width (millisec)
+  uint16_t  channel;      // PWM Channel [1-3]
+  uint16_t  pulseWidth;   // Positive Pulse Width (millisec)
 } pwm_cmd_t;
 
 // ---------------------------------------------------------
@@ -133,6 +133,7 @@ extern QueueHandle_t qh_pwmCommand;;
 
 void task_WebServer(void* param);
 void task_PWM(void* param);
+void task_SerialParser(void* param);
 
 
 // ---------------------------------------------------------
