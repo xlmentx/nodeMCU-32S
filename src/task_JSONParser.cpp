@@ -1,81 +1,20 @@
-/*
- *
- */
-
 #include "defines.h"
-#include <ESP32Servo.h>
 
-// ---------------------------------------------------------
-// Library Hardware Object Instances
-// ---------------------------------------------------------
+#include <ArduinoJson.h>
 
-// Only this file should access the PWM channels
-// PWM Channel Numbers correspond to their PCB Markings
-Servo pwm1;
-Servo pwm2;
-Servo pwm3;
+void task_JSONParser(void* param) {
 
-// Note that pwmChannels[0] is PWM channel 1 etc
-// This is handled correctly inside task_PWM() task loop
-Servo* pwmChannels[3] = {
-  &pwm1,
-  &pwm2,
-  &pwm3
-};
-
-// ---------------------------------------------------------
-// RTOS Tasks
-// ---------------------------------------------------------
-
-void task_PWM(void* param) {
-    Serial.print("task_PWM running on core ");
-    Serial.println(xPortGetCoreID());
-
-    pwm_cmd_t pwmCommand;
+    String payload;
+    const uint32_t size = JSON_OBJECT_SIZE(1000);
+    StaticJsonDocument<size> doc;
+    DeserializationError error;
 
     while(true)
-    {    
-        // Wait indefinitely until PWM Command arrives
-        if (xQueueReceive(server2PWM_QueueHandle, &pwmCommand, portMAX_DELAY) == pdFALSE) {
-            // something bad happened, report error somehow
-            continue;
-        }
-        
-        // TODO report errors somehow?
-        if (pwmCommand.channel < 1 || pwmCommand.channel > 3) continue;
-        if (pwmCommand.pulseWidth < 1000 || pwmCommand.pulseWidth > 2000) continue;
-
-        // pwmCommand.channel ranges in [1-3] to match PCB markings
-        // Convert to 0-index
-        pwmChannels[pwmCommand.channel-1]->writeMicroseconds(pwmCommand.pulseWidth);
+    {
+        // TODO receive JSON String from SerialParser and WebServer, and parse
+        vTaskSuspend(NULL);
     }
 }
-
-// ---------------------------------------------------------
-// Init Functions
-// ---------------------------------------------------------
-
-void initPWM() {
-    pinMode(PWM_THROTTLE, OUTPUT);
-    pwm1.attach(PWM_THROTTLE);
-    pwm1.writeMicroseconds(IDLE_THROT);
-
-    pinMode(PWM_STEERING, OUTPUT);
-    pwm2.attach(PWM_STEERING);
-    pwm2.writeMicroseconds(CENTER_STEER);
-
-    // Channel 3 currently reserved
-    pinMode(PWM_CH3, OUTPUT);
-    pwm3.attach(PWM_CH3);
-    pwm3.writeMicroseconds(1500);
-
-    // Delay to calibrate ESC
-    // TODO remove this, want minimal delays (consider when watchdog
-    // trips and entire system reboots; want quick boot to resume functionality)
-    //delay(7000);
-    Serial.println("PWM Ready to go");
-}
-
 
 /* OLD task_PWM loop
 void task_PWM(void* param) {
@@ -154,4 +93,3 @@ void task_PWM(void* param) {
     }
 }
 */
-

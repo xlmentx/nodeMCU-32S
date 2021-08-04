@@ -1,21 +1,42 @@
-// Dependancies
+#include "defines.h"
+
 #include <Arduino.h>
 #include <SPIFFS.h>
-#include <WiFi.h>
 #include <ESPAsyncWebServer.h>
-#include <ArduinoJson.h>
-#include <math.h>
 #include <esp_int_wdt.h>
 #include <esp_task_wdt.h>
-#include <ESP32Servo.h>
-
-#include "defines.h"
 
 // ---------------------------------------------------------
 // RTOS Structures
 // ---------------------------------------------------------
+
+#define STACK_SIZE_SERVER   (1024*10)   // 10 KWords
+#define STACK_SIZE_PWM      (1024*2)    //  2 KWords
+#define STACK_SIZE_SERIAL   (1024*4)    //  4 KWords
+#define STACK_SIZE_JSON     (1024*4)    //  4 KWords
+
+// Prefer static tasks to determine memory usage at link-time instead of run-time
+#define USE_STATIC_TASKS
+
+#ifdef USE_STATIC_TASKS
+
+// Static Stack Buffers
+StackType_t sb_WebServer     [STACK_SIZE_SERVER];
+StackType_t sb_PWM           [STACK_SIZE_PWM];
+StackType_t sb_SerialParser  [STACK_SIZE_SERIAL];
+StackType_t sb_JSONParser    [STACK_SIZE_JSON];
+
+// Static Task Buffers
+StaticTask_t tb_WebServer;
+StaticTask_t tb_PWM;
+StaticTask_t tb_SerialParser;
+StaticTask_t tb_JSONParser;
+#endif
+
 TaskHandle_t th_server;
 TaskHandle_t th_pwm;
+TaskHandle_t th_serial;
+TaskHandle_t th_json;
 
 QueueHandle_t server2PWM_QueueHandle;
 QueueHandle_t server2Status_QueueHandle;
@@ -56,9 +77,17 @@ void setup()
     initIO();
     initWebServer();
 
-    xTaskCreatePinnedToCore(task_WebServer,    "Task_WebServer",    10240, NULL, 2, &th_server, 0);
-    xTaskCreatePinnedToCore(task_PWM,          "Task_PWM",           2048, NULL, 5, &th_pwm,    1);
-    xTaskCreatePinnedToCore(task_SerialParser, "Task_SerialParser", 40968, NULL, 3, &th_pwm,    1);
+    #ifdef USE_STATIC_TASKS
+        th_server = xTaskCreateStaticPinnedToCore(task_WebServer,    "Task_WebServer",    STACK_SIZE_SERVER,  NULL, 2, sb_WebServer,    &tb_WebServer,    0);
+        th_pwm    = xTaskCreateStaticPinnedToCore(task_PWM,          "Task_PWM",          STACK_SIZE_PWM,     NULL, 5, sb_PWM,          &tb_PWM,          1);
+        th_serial = xTaskCreateStaticPinnedToCore(task_SerialParser, "Task_SerialParser", STACK_SIZE_SERIAL,  NULL, 3, sb_SerialParser, &tb_SerialParser, 1);
+        th_json   = xTaskCreateStaticPinnedToCore(task_JSONParser,   "Task_JSONParser",   STACK_SIZE_JSON,    NULL, 3, sb_JSONParser,   &tb_JSONParser,   1);
+    #else
+        xTaskCreatePinnedToCore(task_WebServer,    "Task_WebServer",    STACK_SIZE_SERVER,  NULL, 2, &th_server, 0);
+        xTaskCreatePinnedToCore(task_PWM,          "Task_PWM",          STACK_SIZE_PWM,     NULL, 5, &th_pwm,    1);
+        xTaskCreatePinnedToCore(task_SerialParser, "Task_SerialParser", STACK_SIZE_SERIAL,  NULL, 3, &th_serial, 1);
+        xTaskCreatePinnedToCore(task_JSONParser,   "Task_JSONParser",   STACK_SIZE_JSON,    NULL, 3, &th_json,   1);
+    #endif
 }
 
 // Main Loop

@@ -2,14 +2,6 @@
 #define ESTOP_DEFINES_H
 
 #include <Arduino.h>
-#include <SPIFFS.h>
-#include <WiFi.h>
-#include <ESPAsyncWebServer.h>
-#include <ArduinoJson.h>
-#include <math.h>
-#include <esp_int_wdt.h>
-#include <esp_task_wdt.h>
-#include <ESP32Servo.h>
 
 // -------------------------------------------------------------------
 // I/O Pins (Hardcoded, PCB V1.0)
@@ -124,8 +116,11 @@ typedef struct {
 // RTOS Task Functions and Handles
 // ---------------------------------------------------------
 
-extern TaskHandle_t  th_server;
-extern TaskHandle_t  th_pwm;
+extern TaskHandle_t th_server;
+extern TaskHandle_t th_pwm;
+extern TaskHandle_t th_serial;
+extern TaskHandle_t th_json;
+
 extern QueueHandle_t server2PWM_QueueHandle;
 extern QueueHandle_t server2Status_QueueHandle;
 
@@ -134,6 +129,7 @@ extern QueueHandle_t qh_pwmCommand;;
 void task_WebServer(void* param);
 void task_PWM(void* param);
 void task_SerialParser(void* param);
+void task_JSONParser(void* param);
 
 
 // ---------------------------------------------------------
@@ -141,12 +137,5 @@ void task_SerialParser(void* param);
 // ---------------------------------------------------------
 void initWebServer();
 void initPWM();
-
-// ---------------------------------------------------------
-// Global Objects
-// ---------------------------------------------------------
-
-extern Servo pwmThrottle;
-extern Servo pwmSteering;
 
 #endif

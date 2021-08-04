@@ -3,9 +3,6 @@
 void task_SerialParser(void* param) {
 
     String payload;
-    const uint32_t size = JSON_OBJECT_SIZE(1000);
-    StaticJsonDocument<size> doc;
-    DeserializationError error;
 
     while(true)
     {
@@ -16,14 +13,7 @@ void task_SerialParser(void* param) {
         // TODO does this block?? Find way to yield to other tasks
         payload = Serial.readStringUntil('\n');
 
-        error = deserializeJson(doc, payload);
-        if (error) {
-            // TODO error handling
-        }
-
-        if (doc.containsKey("test")) {
-            // TODO
-        }
+        // TODO pass payload to JSONParser
     }
 }
 

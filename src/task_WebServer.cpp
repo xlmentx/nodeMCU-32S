@@ -5,6 +5,13 @@
 
 #include "defines.h"
 
+#include <SPIFFS.h>
+#include <ESPAsyncWebServer.h>
+
+// TODO ArduinoJson won't be neccesary, defer JSON parsing to
+// task_JSONParser
+#include <ArduinoJson.h>
+
 // ---------------------------------------------------------
 // WiFi Credentials
 // ---------------------------------------------------------
