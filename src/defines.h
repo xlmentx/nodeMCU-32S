@@ -91,17 +91,6 @@
 //#define RIGHT_STEER 148
 
 // ---------------------------------------------------------
-// Web Server Helper Structures
-// ---------------------------------------------------------
-
-// Button Component
-struct Button {
-    uint8_t pin;
-    bool    on;
-    void update() {digitalWrite(pin, on ? HIGH : LOW);}
-};
-
-// ---------------------------------------------------------
 // Data Structs for IPC
 // ---------------------------------------------------------
 

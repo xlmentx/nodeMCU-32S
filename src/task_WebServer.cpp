@@ -21,8 +21,9 @@ const char *WIFI_PASS = "jetsonucsd";
 // ---------------------------------------------------------
 // Web Server Structures
 // ---------------------------------------------------------
-Button eStop_button = {EMO_PIN, false };
-Button ai_button = {NULL, false};
+bool eStop_button = false;
+bool ai_button = false;
+
 AsyncWebServer server(HTTP_PORT);
 AsyncWebSocket ws("/ws");
 
@@ -39,8 +40,7 @@ void task_WebServer(void* param) {
     Serial.println(xPortGetCoreID());
     
     while (true)
-    {   // Update E-Stop Button
-        eStop_button.update();
+    {
     
         // Close Lingering WebSockets
         if(millis()%1000 == 0){ ws.cleanupClients();}
@@ -78,7 +78,7 @@ void initWebServer() {
 String processor(const String &var) {
     String buttons = "";
     if(var == "E-STOP"){
-        String eStop_state = eStop_button.on?"on":"off";
+        String eStop_state = eStop_button ? "on" : "off";
         buttons += "<button id='eStop' class="+eStop_state+"></button>";
     }
     return buttons;
@@ -131,8 +131,8 @@ void onWebServerEvent(AsyncWebSocket *server,
             }
             // Launch AI 
             else if(json["event"]=="ai") {
-                ai_button.on = !ai_button.on;
-                json["ai"] = ai_button.on? "on": "off";
+                ai_button = !ai_button;
+                json["ai"] = ai_button ? "on": "off";
                 json["event"] = "ai_"+json["ai"].as<String>();                
             } 
             // Update PID 
@@ -142,8 +142,8 @@ void onWebServerEvent(AsyncWebSocket *server,
             } 
             // Update EMO Button
             else if(json["event"] == "eStop") {
-                eStop_button.on = !eStop_button.on;
-                json["eStop"] = eStop_button.on? "on": "off";
+                eStop_button = !eStop_button;
+                json["eStop"] = eStop_button ? "on": "off";
                 json["event"] = "eStop_"+json["eStop"].as<String>();
             }
             
