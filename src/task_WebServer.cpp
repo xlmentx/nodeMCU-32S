@@ -36,8 +36,9 @@ void onRootRequest(AsyncWebServerRequest *request);
 
 // Server Loop
 void task_WebServer(void* param) {
-    Serial.print("task_WebServer running on core ");
-    Serial.println(xPortGetCoreID());
+    char initMsg[64] = "task_WebServer running on core ?";
+    initMsg[strlen(initMsg)-1] = (char) (xPortGetCoreID() + '0');
+    log_i("%s", initMsg);
     
     while (true)
     {
@@ -55,7 +56,8 @@ void task_WebServer(void* param) {
 // Server Initialization
 void initWebServer() {
     // Activate Serial Monitor 
-    delay(500);
+    // TODO this delay may or may not be necessary
+    //delay(500);
   
     // Start SPIFFS
     SPIFFS.begin();
@@ -71,7 +73,7 @@ void initWebServer() {
     server.on("/", onRootRequest);
     server.serveStatic("/", SPIFFS, "/");
     server.begin();
-    Serial.println("\nServer Ready to go");
+    log_v("Server Ready to go");
 }
 
 // FiLL In Buttons For New Users Using Current Values

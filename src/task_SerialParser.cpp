@@ -4,6 +4,10 @@ void task_SerialParser(void* param) {
 
     String payload;
 
+    char initMsg[64] = "task_SerialParser running on core ?";
+    initMsg[strlen(initMsg)-1] = (char) (xPortGetCoreID() + '0');
+    log_i("%s", initMsg);
+
     while(true)
     {
         while(!Serial.available()) {

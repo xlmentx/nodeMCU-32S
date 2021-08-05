@@ -5,9 +5,13 @@
 void task_JSONParser(void* param) {
 
     String payload;
-    const uint32_t size = JSON_OBJECT_SIZE(1000);
+    const uint32_t size = JSON_OBJECT_SIZE(512);
     StaticJsonDocument<size> doc;
     DeserializationError error;
+
+    char initMsg[64] = "task_JSONParser running on core ?";
+    initMsg[strlen(initMsg)-1] = (char) (xPortGetCoreID() + '0');
+    log_i("%s", initMsg);
 
     while(true)
     {

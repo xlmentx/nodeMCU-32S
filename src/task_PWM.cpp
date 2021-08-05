@@ -28,10 +28,11 @@ Servo* pwmChannels[3] = {
 // ---------------------------------------------------------
 
 void task_PWM(void* param) {
-    Serial.print("task_PWM running on core ");
-    Serial.println(xPortGetCoreID());
-
     pwm_cmd_t pwmCommand;
+
+    char initMsg[64] = "task_PWM running on core ?";
+    initMsg[strlen(initMsg)-1] = (char) (xPortGetCoreID() + '0');
+    log_i("%s", initMsg);
 
     while(true)
     {    
@@ -73,7 +74,7 @@ void initPWM() {
     // TODO remove this, want minimal delays (consider when watchdog
     // trips and entire system reboots; want quick boot to resume functionality)
     //delay(7000);
-    Serial.println("PWM Ready to go");
+    log_v("PWM Ready to go");
 }
 
 

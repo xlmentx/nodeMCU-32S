@@ -13,7 +13,7 @@
 #define STACK_SIZE_SERVER   (1024*10)   // 10 KWords
 #define STACK_SIZE_PWM      (1024*2)    //  2 KWords
 #define STACK_SIZE_SERIAL   (1024*4)    //  4 KWords
-#define STACK_SIZE_JSON     (1024*4)    //  4 KWords
+#define STACK_SIZE_JSON     (1024*10)   // 10 KWords
 
 #define QUEUE_LEN_PWM       (10)
 
@@ -66,6 +66,12 @@ void setup()
     Serial.begin(115200);
     Serial.print("setup running on core ");
     Serial.println(xPortGetCoreID());
+
+    //log_e("Log Error");
+    //log_w("Log Warn");
+    //log_i("Log Info");
+    //log_d("Log Debug");
+    //log_v("Log Verbose");
 
     qh_pwmCommand = xQueueCreateStatic(QUEUE_LEN_PWM, sizeof(pwm_cmd_t), qb_pwm, &q_pwmCommand);
 
