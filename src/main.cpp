@@ -11,7 +11,7 @@
 // ---------------------------------------------------------
 
 #define STACK_SIZE_SERVER   (1024*10)   // 10 KWords
-#define STACK_SIZE_PWM      (1024*2)    //  2 KWords
+#define STACK_SIZE_PWM      (1024*4)    //  4 KWords
 #define STACK_SIZE_SERIAL   (1024*4)    //  4 KWords
 #define STACK_SIZE_JSON     (1024*10)   // 10 KWords
 

@@ -30,7 +30,7 @@ Servo* pwmChannels[3] = {
 void task_PWM(void* param) {
     pwm_cmd_t pwmCommand;
 
-    char initMsg[64] = "task_PWM running on core ?";
+    char logBuf[128] = "task_PWM running on core ?";
     initMsg[strlen(initMsg)-1] = (char) (xPortGetCoreID() + '0');
     log_i("%s", initMsg);
 
@@ -42,9 +42,16 @@ void task_PWM(void* param) {
             continue;
         }
         
-        // TODO report errors somehow?
-        if (pwmCommand.channel < 1 || pwmCommand.channel > 3) continue;
-        if (pwmCommand.pulseWidth < 1000 || pwmCommand.pulseWidth > 2000) continue;
+        if (pwmCommand.channel < 1 || pwmCommand.channel > 3) {
+            sprintf(logBuf, "Invalid PWM Channel (%d)", pwmCommand.channel);
+            log_e("%s", logBuf);
+            continue;
+        }
+        if (pwmCommand.pulseWidth < 1000 || pwmCommand.pulseWidth > 2000) {
+            sprintf(logBuf, "Invalid PWM Pulse Width (%d)", pwmCommand.pulseWidth);
+            log_e("%s", logBuf);
+            continue;
+        }
 
         // pwmCommand.channel ranges in [1-3] to match PCB markings
         // Convert to 0-index
