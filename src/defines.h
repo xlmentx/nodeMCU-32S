@@ -110,9 +110,6 @@ extern TaskHandle_t th_pwm;
 extern TaskHandle_t th_serial;
 extern TaskHandle_t th_json;
 
-extern QueueHandle_t server2PWM_QueueHandle;
-extern QueueHandle_t server2Status_QueueHandle;
-
 extern QueueHandle_t qh_pwmCommand;;
 
 void task_WebServer(void* param);
