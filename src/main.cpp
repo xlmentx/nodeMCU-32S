@@ -56,7 +56,6 @@ static void initWDT();
 // Set Up
 void setup()
 {
-    // Create Server to PWM Queue
     Serial.begin(115200);
     Serial.print("setup running on core ");
     Serial.println(xPortGetCoreID());
