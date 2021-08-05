@@ -15,6 +15,8 @@
 #define STACK_SIZE_SERIAL   (1024*4)    //  4 KWords
 #define STACK_SIZE_JSON     (1024*4)    //  4 KWords
 
+#define QUEUE_LEN_PWM       (10)
+
 // Prefer static tasks to determine memory usage at link-time instead of run-time
 #define USE_STATIC_TASKS
 
@@ -31,6 +33,13 @@ StaticTask_t tb_WebServer;
 StaticTask_t tb_PWM;
 StaticTask_t tb_SerialParser;
 StaticTask_t tb_JSONParser;
+
+// Static Queue Buffers
+uint8_t qb_pwm[QUEUE_LEN_PWM * sizeof(pwm_cmd_t)];
+
+// Static Queue Instances
+StaticQueue_t q_pwmCommand;
+
 #endif
 
 TaskHandle_t th_server;
@@ -38,9 +47,7 @@ TaskHandle_t th_pwm;
 TaskHandle_t th_serial;
 TaskHandle_t th_json;
 
-QueueHandle_t server2PWM_QueueHandle;
-QueueHandle_t server2Status_QueueHandle;
-QueueHandle_t qh_pwmCommand;;
+QueueHandle_t qh_pwmCommand;
 
 // ---------------------------------------------------------
 // Useful Functions
@@ -60,18 +67,7 @@ void setup()
     Serial.print("setup running on core ");
     Serial.println(xPortGetCoreID());
 
-    // Old queues, deprecate
-    server2PWM_QueueHandle = xQueueCreate(QUEUE_SIZE, sizeof(bool));
-    server2Status_QueueHandle = xQueueCreate(QUEUE_SIZE, sizeof(int));
-
-    qh_pwmCommand = xQueueCreate(6, sizeof(pwm_cmd_t));
-
-    // Severe error, halt execution
-    if (!server2PWM_QueueHandle) {
-        // TODO better error handling
-        Serial.println("QUEUE NOT SET, ENTERING SPINLOCK...");
-        while(1);
-    }
+    qh_pwmCommand = xQueueCreateStatic(QUEUE_LEN_PWM, sizeof(pwm_cmd_t), qb_pwm, &q_pwmCommand);
 
     initIO();
     initWebServer();

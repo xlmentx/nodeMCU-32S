@@ -36,7 +36,7 @@ void task_PWM(void* param) {
     while(true)
     {    
         // Wait indefinitely until PWM Command arrives
-        if (xQueueReceive(server2PWM_QueueHandle, &pwmCommand, portMAX_DELAY) == pdFALSE) {
+        if (xQueueReceive(qh_pwmCommand, &pwmCommand, portMAX_DELAY) == pdFALSE) {
             // something bad happened, report error somehow
             continue;
         }
