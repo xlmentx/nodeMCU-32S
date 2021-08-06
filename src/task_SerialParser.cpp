@@ -1,24 +1,82 @@
 #include "defines.h"
 
+static str_pool_ent_t* allocSerialBufferFromPool();
+
+str_pool_ent_t serBufPool[QUEUE_LEN_SERIAL];
+
 void task_SerialParser(void* param) {
 
-    String payload;
+    str_pool_ent_t* bufferPoolEntry;
+    char* payloadBuffer;
 
-    char initMsg[64] = "task_SerialParser running on core ?";
-    initMsg[strlen(initMsg)-1] = (char) (xPortGetCoreID() + '0');
-    log_i("%s", initMsg);
+    uint32_t payloadPtr = 0;
+    unsigned char c;
+
+    //char initMsg[64] = "task_SerialParser running on core ?";
+    //initMsg[strlen(initMsg)-1] = (char) (xPortGetCoreID() + '0');
+    log_i("task_SerialParser running on core %d", xPortGetCoreID());
 
     while(true)
     {
-        while(!Serial.available()) {
+        // First, "allocate" a serial parse buffer from a pool of
+        // statically allocated string buffers. If none are available,
+        // yield and try again on re-entry
+        bufferPoolEntry = allocSerialBufferFromPool();
+        if (!bufferPoolEntry) {
+            log_d("Found zero available string buffers from static pool, yielding");
             portYIELD();
+            continue;
         }
 
-        // TODO does this block?? Find way to yield to other tasks
-        payload = Serial.readStringUntil('\n');
+        payloadBuffer = bufferPoolEntry->buf;
+        payloadPtr = 0;
 
-        // TODO pass payload to JSONParser
+        c = '\0';
+        while (c != '\n') {
+
+            if (!Serial.available()) {
+                portYIELD();
+            }
+            else {
+                c = (unsigned char) Serial.read();
+                payloadBuffer[payloadPtr++] = c;
+
+                if (payloadPtr >= SERIAL_BUFSIZE) {
+                    log_e("Serial rx buffer overflow, expected <%d chars; JSON Parsing will be corrupted", SERIAL_BUFSIZE);
+                    payloadPtr = 0;
+                    continue;
+                }
+            }
+        }
+
+        payloadBuffer[payloadPtr-1] = '\0';
+        log_d("Received serial message into parse buffer, sending to JSONParser");
+        log_d("%s", payloadBuffer);
+
+        if (xQueueSend(qh_jsonToParse, &bufferPoolEntry, 50) != pdTRUE) {
+            log_w("JSONParser queue full, timed out; Dropping serial message");
+            xSemaphoreGive(bufferPoolEntry->sem);
+        }
     }
+}
+
+/*
+ * Find an available Serial Buffer Pool Entry from our static 
+ * memory pool, and return it to the user.
+ *
+ * return: Pointer to the first available buffer pool entry
+ *         if any available. NULL if all are taken.
+ *
+ */
+static str_pool_ent_t* allocSerialBufferFromPool() {
+    for (unsigned int i = 0; i < QUEUE_LEN_SERIAL; i++) {
+        if (xSemaphoreTake(serBufPool[i].sem, 1) == pdTRUE) {
+            log_v("Found available string buffer (%d) from static pool", i);
+            return &serBufPool[i];
+        }
+    }
+
+    return NULL;
 }
 
 /* OLD task_PWM loop
@@ -68,18 +126,18 @@ void task_PWM(void* param) {
         }
         
         // Get Message
-        String payload;
+        String payloadBuffer;
         if(Serial.available()) {
             begin = millis();
             end = millis();
             esp_task_wdt_reset();
-            payload = Serial.readStringUntil('\n');
+            payloadBuffer = Serial.readStringUntil('\n');
         }
   
         // Deserialize Message
         const uint8_t size = JSON_OBJECT_SIZE(1000);
         StaticJsonDocument<size> doc;
-        DeserializationError error = deserializeJson(doc, payload);
+        DeserializationError error = deserializeJson(doc, payloadBuffer);
         if (error) {
           // TODO error handling
         } else {

@@ -91,6 +91,21 @@
 //#define RIGHT_STEER 148
 
 // ---------------------------------------------------------
+// RTOS Structure Macros
+// ---------------------------------------------------------
+
+#define STACK_SIZE_SERVER   (1024U*10)   // 10 KWords
+#define STACK_SIZE_PWM      (1024U*4)    //  4 KWords
+#define STACK_SIZE_SERIAL   (1024U*4)    //  4 KWords
+#define STACK_SIZE_JSON     (1024U*10)   // 10 KWords
+
+#define QUEUE_LEN_PWM       (10U)
+#define QUEUE_LEN_SERIAL    (10U)
+#define QUEUE_LEN_JSON      (10U)
+
+#define SERIAL_BUFSIZE      (256U)
+
+// ---------------------------------------------------------
 // Data Structs for IPC
 // ---------------------------------------------------------
 
@@ -101,6 +116,15 @@ typedef struct {
   uint16_t  pulseWidth;   // Positive Pulse Width (millisec)
 } pwm_cmd_t;
 
+// Serial Buffer Pool Entry, used to allocate strings from
+// static memory to reduce malloc() fragmentation risk
+typedef struct {
+  SemaphoreHandle_t   sem;
+  char                buf[SERIAL_BUFSIZE];
+} str_pool_ent_t;
+
+extern str_pool_ent_t serBufPool[QUEUE_LEN_SERIAL];
+
 // ---------------------------------------------------------
 // RTOS Task Functions and Handles
 // ---------------------------------------------------------
@@ -110,7 +134,8 @@ extern TaskHandle_t th_pwm;
 extern TaskHandle_t th_serial;
 extern TaskHandle_t th_json;
 
-extern QueueHandle_t qh_pwmCommand;;
+extern QueueHandle_t qh_pwmCommand;
+extern QueueHandle_t qh_jsonToParse;
 
 void task_WebServer(void* param);
 void task_PWM(void* param);

@@ -31,8 +31,8 @@ void task_PWM(void* param) {
     pwm_cmd_t pwmCommand;
 
     char logBuf[128] = "task_PWM running on core ?";
-    initMsg[strlen(initMsg)-1] = (char) (xPortGetCoreID() + '0');
-    log_i("%s", initMsg);
+    logBuf[strlen(logBuf)-1] = (char) (xPortGetCoreID() + '0');
+    log_i("%s", logBuf);
 
     while(true)
     {    

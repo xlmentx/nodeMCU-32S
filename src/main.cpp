@@ -10,13 +10,6 @@
 // RTOS Structures
 // ---------------------------------------------------------
 
-#define STACK_SIZE_SERVER   (1024*10)   // 10 KWords
-#define STACK_SIZE_PWM      (1024*4)    //  4 KWords
-#define STACK_SIZE_SERIAL   (1024*4)    //  4 KWords
-#define STACK_SIZE_JSON     (1024*10)   // 10 KWords
-
-#define QUEUE_LEN_PWM       (10)
-
 // Prefer static tasks to determine memory usage at link-time instead of run-time
 #define USE_STATIC_TASKS
 
@@ -36,9 +29,14 @@ StaticTask_t tb_JSONParser;
 
 // Static Queue Buffers
 uint8_t qb_pwm[QUEUE_LEN_PWM * sizeof(pwm_cmd_t)];
+uint8_t qb_json[QUEUE_LEN_JSON * sizeof(str_pool_ent_t*)];
+
+// Static Semaphore Buffers
+StaticSemaphore_t semb_SerialSemaphores[QUEUE_LEN_SERIAL];
 
 // Static Queue Instances
 StaticQueue_t q_pwmCommand;
+StaticQueue_t q_json;
 
 #endif
 
@@ -48,6 +46,7 @@ TaskHandle_t th_serial;
 TaskHandle_t th_json;
 
 QueueHandle_t qh_pwmCommand;
+QueueHandle_t qh_jsonToParse;
 
 // ---------------------------------------------------------
 // Useful Functions
@@ -73,7 +72,13 @@ void setup()
     //log_d("Log Debug");
     //log_v("Log Verbose");
 
-    qh_pwmCommand = xQueueCreateStatic(QUEUE_LEN_PWM, sizeof(pwm_cmd_t), qb_pwm, &q_pwmCommand);
+    qh_pwmCommand  = xQueueCreateStatic(QUEUE_LEN_PWM,  sizeof(pwm_cmd_t),       qb_pwm,  &q_pwmCommand);
+    qh_jsonToParse = xQueueCreateStatic(QUEUE_LEN_JSON, sizeof(str_pool_ent_t*), qb_json, &q_json);
+
+    for (unsigned int i = 0; i < QUEUE_LEN_SERIAL; i++) {
+        serBufPool[i].sem = xSemaphoreCreateBinaryStatic(&semb_SerialSemaphores[i]);
+        xSemaphoreGive(serBufPool[i].sem);
+    }
 
     initIO();
     initWebServer();
