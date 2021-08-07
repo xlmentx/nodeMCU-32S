@@ -1,0 +1,6 @@
+{"event":"load","heartbeat":"200","eStop":"off",
+"srvPin":"16","escPin":"2","emoPin":"15",
+"ltSteer":"1330","ctrSteer":"1450","rtSteer":"1580",
+"minThrottle":"1000","midThrottle":"1500","maxThrottle":"2000",
+"tScalar":"0.5","nRecords":"100","ai":"off",
+"kp":"50","ki":"50","kd":"50"}

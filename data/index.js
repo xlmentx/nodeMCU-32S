@@ -1,41 +1,44 @@
-// Global Variables
-var gateway = `ws://${window.location.hostname}/ws`;
 var websocket;
         
-// Initialize On Page Load
-window.addEventListener('load', onLoad);
-function onLoad(event) {
-    // Initialize Global Variables
-    websocket = new WebSocket(gateway);
+// Initialize Page on Load
+window.onload = function() {
+    // Define User WebSocket
+    websocket = new WebSocket(`ws://${window.location.hostname}/ws`);
+    
+    // Set Mobile Device Height
     document.body.style.height = /Mobi/i.test(window.navigator.userAgent)? 
         window.innerHeight+'px': '100vh'
     
-    // Initialize Handlers
+    // Set Page Handlers
     webSocketHandlers();
     eventHandlers();
 }
 
-// WebSocket Handling
+// WebSocket Handlers
 function webSocketHandlers() {
     // On WebSocket Close 
     websocket.onclose = function() {
-        setTimeout(webSocketHandlers, 2000)
+        setTimeout(webSocketHandlers, 2000);
     }
 
     // On WebSocket Message 
     websocket.onmessage = function(event) {
         var data = JSON.parse(event.data);
-console.log('Recieved:',data);
         var elements = document.getElementsByTagName('*');
+
+        // Define User Messages
         var messages = {
+            'load': 'Loading Current Values\n- MC values updated',
             'test': 'Testing Calibration\n- steering...\n- throttle...\n- done',
             'save': 'Saving Calibration\n- MC values stored\n- MC values updated',
-            'throttle': 'Updating Max Throttle\n- max throttle set to '+data.max, 
-            'ai_on': 'AI Mode\n- launching AI\n- AI active',    
-            'ai_off': 'Manual Mode\n- launching manual\n- manual active',    
+            'scale': 'Scaling Throttle\n- throttle scalar set to '+data.tScalar, 
+            'ai': data.ai=='on'? 
+                'AI Mode\n- launching AI\n- AI active':    
+                'Manual Mode\n- launching manual\n- manual active',    
             'erase': 'Erasing Records\n- erased '+data.n+' records',
-            'eStop_on': 'EMERGENCY STOP !!!\n- killing throttle\n- centering steering',
-            'eStop_off': 'Resuming Services\n- program resumed',
+            'eStop': data.eStop=='on'?
+                'EMERGENCY STOP !!!\n- killing throttle\n- centering steering':
+                'Resuming Services\n- program resumed',
             'pid': 'Updating PID Values\n- PID values updated'                         
         }        
         
@@ -44,7 +47,7 @@ console.log('Recieved:',data);
         for(var id in data)  {
             elements[id].value = data[id];
 
-            // Trigger Slider Update
+            // Trigger Slider Updates
             if(elements[id].type == 'range') {
                 elements[id].dispatchEvent(new Event('input'));
             }
@@ -67,7 +70,7 @@ function eventHandlers() {
     // Input Sliders
     for(var input of document.querySelectorAll('[type=range]')) {
         input.addEventListener('input', function() {
-            // Update TrackS
+            // Update Tracks
             var gradient = '#70FEE8 '+this.value+'%, #091d36 '+this.value+'%';
             this.style.background = 'linear-gradient(90deg, '+gradient+')';                     
         });
@@ -84,7 +87,6 @@ function eventHandlers() {
             }
             
             // Send Message
-            console.log('Sent:',json);
             navigator.vibrate(20);
             websocket.send(JSON.stringify(json));
         });
@@ -101,7 +103,7 @@ function eventHandlers() {
             }    
 
             // Temp Donkey/Ros Switcher
-            if(this.id='switch') {
+            if(this.id == 'switch') {
                 var program = document.getElementById('program'); 
                 program.innerText = program.innerText=='DONKEY'? 'ROS': 'DONKEY';
             }

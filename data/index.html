@@ -26,21 +26,21 @@
       </span>
       <span>
         <p>Pins:</p>
-        <p class='right'>srv <input id='servo_pin' type='number' max='4'></p>
-        <p class='right'>esc <input id='esc_pin' type='number' max='4'></p>
-        <p class='right'>emo <input id='emo_pin' type='number' max='4'></p>
+        <p class='right'>srv <input id='srvPin' type='number' max='4'></p>
+        <p class='right'>esc <input id='escPin' type='number' max='4'></p>
+        <p class='right'>emo <input id='emoPin' type='number' max='4'></p>
       </span>
       <span>
         <p>Steering:</p>
-        <p class='right'>lt <input id='left_steer' type='number' max='4'></p>
-        <p class='right'>ctr <input id='center_steer' type='number' max='4'></p>
-        <p class='right'>rt <input id='right_steer' type='number' max='4'></p>
+        <p class='right'>lt <input id='ltSteer' type='number' max='4'></p>
+        <p class='right'>ctr <input id='ctrSteer' type='number' max='4'></p>
+        <p class='right'>rt <input id='rtSteer' type='number' max='4'></p>
       </span>
       <span>
         <p>Throttle:</p>
-        <p class='right'>min <input id='min_throttle' type='number' max='4'></p>
-        <p class='right'>mid <input id='mid_throttle' type='number' max='4'></p>
-        <p class='right'>max <input id='max_throttle' type='number' max='4'></p>
+        <p class='right'>min <input id='minThrottle' type='number' max='4'></p>
+        <p class='right'>mid <input id='midThrottle' type='number' max='4'></p>
+        <p class='right'>max <input id='maxThrottle' type='number' max='4'></p>
       </span>
       <span>
         <p>Heartbeat:</p>
@@ -65,15 +65,15 @@
       </span>
       <label id='donkey'>
         <span> 
-          <P class='wide'>Max Throttle <input id='max' type='number' max='4'></p>
+          <P class='wide'>&emsp;T-Scalar <input id='tScalar' type='number' max='4'></p>
           <P class='wide'>
-            <button id='throttle' data-form='#max'>&ensp;Update Max&ensp;</button>
+            <button id='scale' data-form='#tScalar'>&nbsp;Scale Throttle&nbsp;</button>
           </P>
         </span>
         <span>
-          <P class='wide'>&nbsp N-Records <input id='n' type='number' max='4'></p>
+          <P class='wide'>N-Records <input id='nRecords' type='number' max='4'></p>
           <P class='wide'>
-            <button id='erase' data-form='#n'>Erase Records</button>
+            <button id='erase' data-form='#nRecords'>Erase Records</button>
           </P>
         </span>
         <span>
@@ -86,15 +86,15 @@
       <label id='ros' class='min'>
         <span>
           <p class='right'>kP:</p> 
-          <input id='kp' type='range' max='100' value='50'>
+          <input id='kp' type='range' max='100'>
         </span>
         <span> 
           <p class='right'>kI:</p> 
-          <input id='ki' type='range' max='100' value='50'>
+          <input id='ki' type='range' max='100'>
         </span>
         <span>
           <p class='right'>kD:</p> 
-          <input id='kd' type='range' max='100' value='50'>
+          <input id='kd' type='range' max='100'>
         </span>
         <span>
           <p></p>
