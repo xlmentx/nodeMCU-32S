@@ -1,6 +1,5 @@
-{"event":"load","heartbeat":"200","eStop":"off",
-"srvPin":"16","escPin":"2","emoPin":"15",
+{"event":"load","frequency":"200","eStop":"false",
 "ltSteer":"1330","ctrSteer":"1450","rtSteer":"1580",
-"minThrottle":"1000","midThrottle":"1500","maxThrottle":"2000",
-"tScalar":"0.5","nRecords":"100","ai":"off",
+"minThrot":"1000","midThrot":"1500","maxThrot":"2000",
+"tScalar":"0.5","nRecords":"100","ai":"false",
 "kp":"50","ki":"50","kd":"50"}

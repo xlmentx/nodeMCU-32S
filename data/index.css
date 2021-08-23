@@ -143,7 +143,7 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
-button[value='on'], button:active {
+button[value='true'], button:active {
   background-color: #70FEE8;
   font-weight: bolder;
   color: #091d36;
@@ -190,7 +190,7 @@ button[value='on'], button:active {
   background-image: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
 }
 
-#eStop[value='on'] {
+#eStop[value='true'] {
   background-image: radial-gradient(farthest-corner at 50% 75%, red 0%, #990000 100%);
   box-shadow: 0 1em 1.5em rgba(255, 0, 0, 0.5);
 }

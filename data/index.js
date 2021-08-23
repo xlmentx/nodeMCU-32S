@@ -25,18 +25,18 @@ function webSocketHandlers() {
     websocket.onmessage = function(event) {
         var data = JSON.parse(event.data);
         var elements = document.getElementsByTagName('*');
-
+console.log(data);
         // Define User Messages
         var messages = {
             'load': 'Loading Current Values\n- MC values updated',
             'test': 'Testing Calibration\n- steering...\n- throttle...\n- done',
             'save': 'Saving Calibration\n- MC values stored\n- MC values updated',
             'scale': 'Scaling Throttle\n- throttle scalar set to '+data.tScalar, 
-            'ai': data.ai=='on'? 
+            'ai': data.ai? 
                 'AI Mode\n- launching AI\n- AI active':    
                 'Manual Mode\n- launching manual\n- manual active',    
-            'erase': 'Erasing Records\n- erased '+data.n+' records',
-            'eStop': data.eStop=='on'?
+            'erase': 'Erasing Records\n- erased '+data.nRecords+' records',
+            'eStop': data.eStop?
                 'EMERGENCY STOP !!!\n- killing throttle\n- centering steering':
                 'Resuming Services\n- program resumed',
             'pid': 'Updating PID Values\n- PID values updated'                         

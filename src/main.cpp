@@ -1,4 +1,4 @@
-#include "defines.h"
+#include "defenitions.h"
 
 #include <Arduino.h>
 #include <SPIFFS.h>
@@ -66,6 +66,11 @@ void setup()
     Serial.print("setup running on core ");
     Serial.println(xPortGetCoreID());
 
+    // Load Flash File System
+    LITTLEFS.begin();
+
+    initEventHandler();
+
     //log_e("Log Error");
     //log_w("Log Warn");
     //log_i("Log Info");
@@ -81,18 +86,15 @@ void setup()
     }
 
     initIO();
-    initWebServer();
 
     #ifdef USE_STATIC_TASKS
-        th_server = xTaskCreateStaticPinnedToCore(task_WebServer,    "Task_WebServer",    STACK_SIZE_SERVER,  NULL, 2, sb_WebServer,    &tb_WebServer,    0);
-        th_pwm    = xTaskCreateStaticPinnedToCore(task_PWM,          "Task_PWM",          STACK_SIZE_PWM,     NULL, 5, sb_PWM,          &tb_PWM,          1);
+        th_server = xTaskCreateStaticPinnedToCore(webServer,    "WebServer",    STACK_SIZE_SERVER,  NULL, 2, sb_WebServer,    &tb_WebServer,    0);
+        th_pwm    = xTaskCreateStaticPinnedToCore(pwmGenerator,          "Task_PWM",          STACK_SIZE_PWM,     NULL, 5, sb_PWM,          &tb_PWM,          1);
         th_serial = xTaskCreateStaticPinnedToCore(task_SerialParser, "Task_SerialParser", STACK_SIZE_SERIAL,  NULL, 3, sb_SerialParser, &tb_SerialParser, 1);
-        th_json   = xTaskCreateStaticPinnedToCore(task_JSONParser,   "Task_JSONParser",   STACK_SIZE_JSON,    NULL, 3, sb_JSONParser,   &tb_JSONParser,   1);
     #else
-        xTaskCreatePinnedToCore(task_WebServer,    "Task_WebServer",    STACK_SIZE_SERVER,  NULL, 2, &th_server, 0);
-        xTaskCreatePinnedToCore(task_PWM,          "Task_PWM",          STACK_SIZE_PWM,     NULL, 5, &th_pwm,    1);
+        xTaskCreatePinnedToCore(webServer,    "Task_WebServer",    STACK_SIZE_SERVER,  NULL, 2, &th_server, 0);
+        xTaskCreatePinnedToCore(pwmGenerator,          "Task_PWM",          STACK_SIZE_PWM,     NULL, 5, &th_pwm,    1);
         xTaskCreatePinnedToCore(task_SerialParser, "Task_SerialParser", STACK_SIZE_SERIAL,  NULL, 3, &th_serial, 1);
-        xTaskCreatePinnedToCore(task_JSONParser,   "Task_JSONParser",   STACK_SIZE_JSON,    NULL, 3, &th_json,   1);
     #endif
 }
 
@@ -113,7 +115,7 @@ static void initIO() {
   pinMode(RB_B,  OUTPUT);
 
   // PWM Pins
-  initPWM();
+  initPWMGenerator();
 
   // RC Pins
   initRC();

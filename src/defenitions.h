@@ -2,15 +2,18 @@
 #define ESTOP_DEFINES_H
 
 #include <Arduino.h>
+#include <LITTLEFS.h>
 
 // -------------------------------------------------------------------
 // I/O Pins (Hardcoded, PCB V1.0)
 // -------------------------------------------------------------------
 
 // Generic PWM Outputs
-#define PWM_CH1 16
-#define PWM_CH2 2
-#define PWM_CH3 12
+#define PWM_CH1 12
+
+// PWM Pin Aliases
+#define PWM_THROTTLE 2
+#define PWM_STEERING 16
 
 // Generic RC Inputs
 #define RC_CH1 36
@@ -48,29 +51,15 @@
 // For emulating Adafruit PCA9685 PWM Driver, use with I2C1 bus
 #define PWM_OE    13
 
-// -------------------------------------------------------------------
-// I/O Pin Aliases (for team-specific wiring; modify as necessary)
-// -------------------------------------------------------------------
-
-// PWM Pin Aliases
-#define PWM_STEERING PWM_CH1
-#define PWM_THROTTLE PWM_CH2
-
-// RC Pin Aliases
-// define as necessary, with Jack/Haoru's help
-
 // ---------------------------------------------------------
 // Macros (TODO Organize)
 // ---------------------------------------------------------
-#define HTTP_PORT 80
 #define TIMEOUT 500
 #define WDT_TIMEOUT 3
 #define QUEUE_SIZE 10
-#define JSON_SIZE 13
 #define BUFFER_SIZE 310
 #define STEERING_CHN 3
 #define EMO_PIN 15
-
 // ---------------------------------------------------------
 // Calibration Parameters (TODO Store in Flash Memory)
 // ---------------------------------------------------------
@@ -137,16 +126,60 @@ extern TaskHandle_t th_json;
 extern QueueHandle_t qh_pwmCommand;
 extern QueueHandle_t qh_jsonToParse;
 
-void task_WebServer(void* param);
-void task_PWM(void* param);
-void task_SerialParser(void* param);
-void task_JSONParser(void* param);
-
 
 // ---------------------------------------------------------
-// Global Function Prototypes
+// WEB SERVER
 // ---------------------------------------------------------
-void initWebServer();
-void initPWM();
 
+  // Defenitions 
+  #define HTTP_PORT 80
+  #define WIFI_SSID "ESP32-MC"
+  #define WIFI_PASS "jetsonucsd"
+  #define WEBSOCKET_TIMEOUT 1000
+  #define WEBSERVER_DELAY 400
+
+  // Functions 
+  void webServer(void *param);
+  void syncDevices(char *message);
+
+// ---------------------------------------------------------
+// EVENT HANDLER
+// ---------------------------------------------------------
+
+  // Defenitions 
+  #define JSON_SIZE 510
+
+  // Functions
+  void initEventHandler();
+  void getInitialValues(char *jsonBuffer);
+  void parseData(uint8_t *data);
+
+// ---------------------------------------------------------
+// PWM GENERATOR
+// ---------------------------------------------------------
+
+  // Functions
+  void initPWMGenerator();
+  void pwmGenerator(void *param);
+  void toggleEStop(bool const &eStop);
+  void testCalibration( int const &ltSteer,
+                        int const &ctrSteer,
+                        int const &rtSteer,
+                        int const &minThrot,
+                        int const &midThrot,
+                        int const &maxThrot,
+                        int const &frequency);
+
+// ---------------------------------------------------------
+// JETSON SERVER
+// ---------------------------------------------------------
+
+  // Functions
+  void task_SerialParser(void *param);
+  void toggleAI(bool const &ai);
+  void eraseRecords(int const &nRecords);
+  void scaleThrottle(int const &tScalar);
+  void updatePID( int const &kp,
+                  int const &ki,
+                  int const &kd);
 #endif

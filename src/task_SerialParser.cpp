@@ -1,4 +1,4 @@
-#include "defines.h"
+#include "defenitions.h"
 
 static str_pool_ent_t* allocSerialBufferFromPool();
 
@@ -79,6 +79,32 @@ static str_pool_ent_t* allocSerialBufferFromPool() {
     return NULL;
 }
 
+// ---------------------------------------------------------
+// Event Functions
+// ---------------------------------------------------------
+
+void toggleAI(bool const &ai) {
+    if(ai) {
+        //xQueueSend(...);
+    }
+    else {
+        //xQueueSend(...);
+    }
+}
+
+void eraseRecords(int const &nRecords) {
+    //xQueueSend(...);
+}
+
+void scaleThrottle(int const &tScalar) {
+    //xQueueSend(...);
+}
+
+void updatePID( int const &kp,
+                int const &ki,
+                int const &kd) {
+    //xQueueSend(...);
+}
 /* OLD task_PWM loop
 void task_PWM(void* param) {
     Serial.print("task_PWM running on core ");

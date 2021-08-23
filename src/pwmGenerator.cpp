@@ -2,7 +2,7 @@
  *
  */
 
-#include "defines.h"
+#include "defenitions.h"
 #include <ESP32Servo.h>
 
 // ---------------------------------------------------------
@@ -27,7 +27,7 @@ Servo* pwmChannels[3] = {
 // RTOS Tasks
 // ---------------------------------------------------------
 
-void task_PWM(void* param) {
+void pwmGenerator(void* param) {
     pwm_cmd_t pwmCommand;
 
     char logBuf[128] = "task_PWM running on core ?";
@@ -63,7 +63,7 @@ void task_PWM(void* param) {
 // Init Functions
 // ---------------------------------------------------------
 
-void initPWM() {
+void initPWMGenerator() {
     pinMode(PWM_THROTTLE, OUTPUT);
     pwm1.attach(PWM_THROTTLE);
     pwm1.writeMicroseconds(IDLE_THROT);
@@ -72,9 +72,9 @@ void initPWM() {
     pwm2.attach(PWM_STEERING);
     pwm2.writeMicroseconds(CENTER_STEER);
 
-    // Channel 3 currently reserved
-    pinMode(PWM_CH3, OUTPUT);
-    pwm3.attach(PWM_CH3);
+    // Channel 1 currently reserved
+    pinMode(PWM_CH1, OUTPUT);
+    pwm3.attach(PWM_CH1);
     pwm3.writeMicroseconds(1500);
 
     // Delay to calibrate ESC
@@ -84,6 +84,29 @@ void initPWM() {
     log_v("PWM Ready to go");
 }
 
+// ---------------------------------------------------------
+// Event Functions
+// ---------------------------------------------------------
+
+void toggleEStop(bool const &eStop) {
+    if(eStop) {
+        //xQueueSend(...);
+    }
+    else {
+        //xQueueSend(...);
+    }
+}
+
+void testCalibration(int const &ltSteer,
+                     int const &ctrSteer,
+                     int const &rtSteer,
+                     int const &minThrot,
+                     int const &midThrot,
+                     int const &maxThrot,
+                     int const &frequency) {
+
+    //xQueueSend(...);
+}
 
 /* OLD task_PWM loop
 void task_PWM(void* param) {

@@ -49,7 +49,7 @@ void webSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEve
                 // Launch AI 
                 else if(json["event"] == "ai") {
                     // LaunchAI();
-                    json["ai"] = json["ai"]=="on"? "off": "on";
+                    json["ai"] = json["ai"]=="off"? "on": "off";
                 } 
                 // Update PID 
                 else if(json["event"] == "pid") {
@@ -57,7 +57,7 @@ void webSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEve
                 } 
                 // Toggle EMO Button
                 else if(json["event"] == "eStop") {
-                    json["eStop"] = json["eStop"]="off"? "on": "off";
+                    json["eStop"] = json["eStop"]=="off"? "on": "off";
                 }
                 
                 // Update Current MC Values
