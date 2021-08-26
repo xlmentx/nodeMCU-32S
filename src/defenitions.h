@@ -69,10 +69,10 @@
 #define MAX_THROT   2000
 
 // Currently calculated from mapping 0-255 values
-// into 1000-2000 microsecond pulses
-#define LEFT_STEER 1330
-#define CENTER_STEER 1450
-#define RIGHT_STEER 1580
+#define LEFT_STEER 84
+#define MID_STEER 116
+#define RIGHT_STEER 148
+
 
 // Original 0-255 values. Remove eventually
 //#define LEFT_STEER 84

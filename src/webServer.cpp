@@ -18,10 +18,6 @@ void webSocketEvent(AsyncWebSocket *server,
     // New User Connection
     if(type == WS_EVT_CONNECT) {
         char jsonBuffer[JSON_SIZE];
-        Serial.print("Web Server Connecting On Core[");
-        Serial.print(xPortGetCoreID());
-        Serial.println("]");
-        Serial.print("Web Server Retrieving On Core[");
         getInitialValues(jsonBuffer);
         client->text(jsonBuffer);
     }
@@ -29,10 +25,6 @@ void webSocketEvent(AsyncWebSocket *server,
     else if(type == WS_EVT_DATA) {
         AwsFrameInfo *info = (AwsFrameInfo*)arg;
         if(info->final && info->index==0 && info->len==len && info->opcode==WS_TEXT) {
-            Serial.print("Web Server Recieving On Core[");
-            Serial.print(xPortGetCoreID());
-            Serial.println("]");
-            Serial.print("WebServer Parsing On Core[");
             parseData(data);
         }
     }
@@ -53,9 +45,6 @@ void webServer(void* param) {
     server.serveStatic("/", LITTLEFS, "/");
     server.on("/", [](AsyncWebServerRequest *request){
         request->send(LITTLEFS, "/index.html", "text/html");
-        Serial.print("Web Server Sending On Core[");
-        Serial.print(xPortGetCoreID());
-        Serial.println("]");   
     });
     
     // Launch Soft Access Point and Server
@@ -67,8 +56,7 @@ void webServer(void* param) {
     Serial.print(xPortGetCoreID());
     Serial.println("]");
     while (true)
-    {   
-        // Close Lingering WebSockets
+    {   // Close Lingering WebSockets
         if(millis()%WEBSOCKET_TIMEOUT == 0) { 
             ws.cleanupClients();
         }
