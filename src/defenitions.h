@@ -175,7 +175,7 @@ extern QueueHandle_t qh_jsonToParse;
 // ---------------------------------------------------------
 
   // Functions
-  void task_SerialParser(void *param);
+  void jetsonServer(void *param);
   void toggleAI(bool const &ai);
   void eraseRecords(int const &nRecords);
   void scaleThrottle(int const &tScalar);

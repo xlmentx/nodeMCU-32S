@@ -18,13 +18,13 @@
 // Static Stack Buffers
 StackType_t sb_WebServer     [STACK_SIZE_SERVER];
 StackType_t sb_PWM           [STACK_SIZE_PWM];
-StackType_t sb_SerialParser  [STACK_SIZE_SERIAL];
+StackType_t sb_jetsonServer  [STACK_SIZE_SERIAL];
 StackType_t sb_JSONParser    [STACK_SIZE_JSON];
 
 // Static Task Buffers
 StaticTask_t tb_WebServer;
 StaticTask_t tb_PWM;
-StaticTask_t tb_SerialParser;
+StaticTask_t tb_jetsonServer;
 StaticTask_t tb_JSONParser;
 
 // Static Queue Buffers
@@ -88,13 +88,13 @@ void setup()
     initIO();
 
     #ifdef USE_STATIC_TASKS
-        th_server = xTaskCreateStaticPinnedToCore(webServer,    "WebServer",    STACK_SIZE_SERVER,  NULL, 2, sb_WebServer,    &tb_WebServer,    0);
-        th_pwm    = xTaskCreateStaticPinnedToCore(pwmGenerator,          "Task_PWM",          STACK_SIZE_PWM,     NULL, 5, sb_PWM,          &tb_PWM,          1);
-        th_serial = xTaskCreateStaticPinnedToCore(task_SerialParser, "Task_SerialParser", STACK_SIZE_SERIAL,  NULL, 3, sb_SerialParser, &tb_SerialParser, 1);
+        th_server = xTaskCreateStaticPinnedToCore(webServer, "WebServer",    STACK_SIZE_SERVER, NULL, 2, sb_WebServer, &tb_WebServer, 0);
+        th_pwm    = xTaskCreateStaticPinnedToCore(pwmGenerator, "Task_PWM", STACK_SIZE_PWM, NULL, 5, sb_PWM, &tb_PWM, 1);
+        th_serial = xTaskCreateStaticPinnedToCore(jetsonServer, "jetsonServer", STACK_SIZE_SERIAL, NULL, 3, sb_jetsonServer, &tb_jetsonServer, 1);
     #else
         xTaskCreatePinnedToCore(webServer,    "Task_WebServer",    STACK_SIZE_SERVER,  NULL, 2, &th_server, 0);
         xTaskCreatePinnedToCore(pwmGenerator,          "Task_PWM",          STACK_SIZE_PWM,     NULL, 5, &th_pwm,    1);
-        xTaskCreatePinnedToCore(task_SerialParser, "Task_SerialParser", STACK_SIZE_SERIAL,  NULL, 3, &th_serial, 1);
+        xTaskCreatePinnedToCore(jetsonServer, "jetsonServer", STACK_SIZE_SERIAL,  NULL, 3, &th_serial, 1);
     #endif
 }
 

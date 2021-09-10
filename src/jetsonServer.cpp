@@ -4,7 +4,7 @@ static str_pool_ent_t* allocSerialBufferFromPool();
 
 str_pool_ent_t serBufPool[QUEUE_LEN_SERIAL];
 
-void task_SerialParser(void* param) {
+void jetsonServer(void* param) {
 
     str_pool_ent_t* bufferPoolEntry;
     char* payloadBuffer;
@@ -12,9 +12,9 @@ void task_SerialParser(void* param) {
     uint32_t payloadPtr = 0;
     unsigned char c;
 
-    //char initMsg[64] = "task_SerialParser running on core ?";
+    //char initMsg[64] = "jetsonServer running on core ?";
     //initMsg[strlen(initMsg)-1] = (char) (xPortGetCoreID() + '0');
-    log_i("task_SerialParser running on core %d", xPortGetCoreID());
+    log_i("jetsonServer running on core %d", xPortGetCoreID());
 
     while(true)
     {
