@@ -2,8 +2,8 @@
 From MAE/ECE 148 - Introduction to Autonomous Vehicles
 
 ## Team Members
-Ari Cortes – ECE Senior
-Antoine Laget – CSE Senior (UCSD Extension)
+Ari Cortes – ECE Senior//
+Antoine Laget – CSE Senior (UCSD Extension)\\
 Kevin Lam – MAE Senior
 Jack Ringelberg – MAE Senior
 Teampic team2 sp21.jpg
